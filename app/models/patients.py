@@ -5,7 +5,7 @@ from app.configs.database import Base
 
 
 class Patients(Base):
-    __tablename__ = "PATIENTS"
+    __tablename__ = "patients"
 
     uuid = Column(String, primary_key=True, index=True)
     first_name = Column(String, index=True)

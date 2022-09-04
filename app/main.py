@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Request, Response
 
-
 from app.configs.database import SessionLocal, engine, Base
 from app.routes import router
 
@@ -21,8 +20,3 @@ async def db_session_middleware(request: Request, call_next):
     finally:
         request.state.db.close()
     return response
-
-
-@app.get("/")
-async def read_root():
-    return
