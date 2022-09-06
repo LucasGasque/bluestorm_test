@@ -13,5 +13,7 @@ patients = APIRouter(prefix="/patients", tags=["patients"])
 async def get_patients(
     db: Session = Depends(get_db),
     _: str = Depends(get_current_user),
+    first_name: str = None,
+    last_name: str = None,
 ):
-    return await get_patients_controller(db)
+    return await get_patients_controller(db, first_name, last_name)
