@@ -1,4 +1,3 @@
-import json
 from typing import Any
 from typing import Generator
 
@@ -67,24 +66,3 @@ def client(
     app.dependency_overrides[get_db] = _get_test_db
     with TestClient(app) as client:
         yield client
-
-
-def test_create_existing_user(client):
-    mock_user = {"username": "jondoe", "password": "secret"}
-
-    client.post("/users", json=mock_user)
-
-    response = client.post("/users", json=mock_user)
-
-    assert response.status_code == 400
-    assert response.json() == {"detail": "Username already exists"}
-
-
-def test_login_user(client):
-    mock_user = {"username": "jondoe", "password": "secret"}
-
-    response = client.post("/token", json=mock_user)
-
-    assert response.status_code == 200
-    assert "access_token" in response.json()
-    assert "token_type" in response.json()

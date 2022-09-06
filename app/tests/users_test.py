@@ -23,13 +23,43 @@ def test_create_existing_user(client):
 
 def test_login_user(client):
     session = client
-    headers = {"content-type": "multipart/form-data"}
 
     mock_user = {"username": "jondoe", "password": "secret"}
 
     session.post("/users", json=mock_user)
-    response = session.post("/token", json=mock_user, headers=headers)
+    response = session.post("/token", data=mock_user)
 
     assert response.status_code == 200
     assert "access_token" in response.json()
     assert "token_type" in response.json()
+
+
+def test_login_user_wrong_password(client):
+    session = client
+
+    mock_user = {"username": "jondoe", "password": "secret"}
+
+    session.post("/users", json=mock_user)
+    response = session.post("/token", data={"username": "jondoe", "password": "wrong"})
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Incorrect username or password"}
+
+
+def test_login_user_wrong_form_data(client):
+    session = client
+
+    mock_user = {"username": "jondoe", "password": "secret"}
+
+    session.post("/users", json=mock_user)
+    response = session.post("/token", data={"username": "jondoe"})
+    assert response.status_code == 422
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["body", "password"],
+                "msg": "field required",
+                "type": "value_error.missing",
+            }
+        ]
+    }
